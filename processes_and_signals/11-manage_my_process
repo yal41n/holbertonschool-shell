@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# This is an init-style script to manage the manage_my_process daemon.
+
+PID_FILE="/var/run/my_process.pid"
+DAEMON_SCRIPT="./manage_my_process"
+
+# Function to stop the daemon (used by stop and restart)
+stop_daemon() {
+    if [ -f "$PID_FILE" ]; then
+        # Read PID from file
+        PID=$(cat "$PID_FILE")
+        # Send SIGTERM (or default signal) to kill the process (suppress kill errors)
+        kill "$PID" 2>/dev/null
+        # Delete the PID file
+        rm -f "$PID_FILE"
+    fi
+}
+
+# Function to start the daemon (used by start and restart)
+start_daemon() {
+    # Start the daemon in the background
+    "$DAEMON_SCRIPT" &
+    # Create the PID file with the background process's PID ($!)
+    echo "$!" > "$PID_FILE"
+}
+
+case "$1" in
+    start)
+        start_daemon
+        echo "manage_my_process started"
+        ;;
+    stop)
+        stop_daemon
+        echo "manage_my_process stopped"
+        ;;
+    restart)
+        stop_daemon
+        start_daemon
+        echo "manage_my_process restarted"
+        ;;
+    *)
+        echo "Usage: manage_my_process {start|stop|restart}"
+        ;;
+esac
