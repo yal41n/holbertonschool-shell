@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# This script parses the apache-access.log to count occurrences of IP + HTTP_CODE combinations, then sorts them.
+awk '
+{
+    key = $1 " " $9
+    a[key]++
+}
+END {
+    for (i in a) {
+        print a[i], i
+    }
+}' apache-access.log | sort -rn
