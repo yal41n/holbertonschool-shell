@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # This script reads /etc/passwd line by line and displays username, user ID, and home directory.
-# Set IFS to colon to split fields automatically
 OLDIFS=$IFS
 IFS=:
 
-while read USERNAME PASSWORD USERID GROUPID GECOS HOMEDIR SHELL; do
+while read -r USERNAME _ USERID _ _ HOMEDIR _ ; do
     echo "${USERNAME}:${USERID}:${HOMEDIR}"
 done < /etc/passwd
 
